@@ -27,7 +27,7 @@ import java.io.IOException;
  * CandidateProperty
  */
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-05-23T14:57:09.146594+01:00[Europe/London]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-05-23T23:03:51.387015+01:00[Europe/London]")
 public class CandidateProperty {
   @SerializedName("id")
   private String id = null;
@@ -39,7 +39,7 @@ public class CandidateProperty {
   private CandidatePropertyType type = null;
 
   @SerializedName("value")
-  private OneOfCandidatePropertyValue value = null;
+  private String value = null;
 
   @SerializedName("actions")
   private CandidatePropertyActions actions = null;
@@ -98,7 +98,7 @@ public class CandidateProperty {
     this.type = type;
   }
 
-  public CandidateProperty value(OneOfCandidatePropertyValue value) {
+  public CandidateProperty value(String value) {
     this.value = value;
     return this;
   }
@@ -108,11 +108,11 @@ public class CandidateProperty {
    * @return value
   **/
   @Schema(required = true, description = "")
-  public OneOfCandidatePropertyValue getValue() {
+  public String getValue() {
     return value;
   }
 
-  public void setValue(OneOfCandidatePropertyValue value) {
+  public void setValue(String value) {
     this.value = value;
   }
 

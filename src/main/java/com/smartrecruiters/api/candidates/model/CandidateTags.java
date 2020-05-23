@@ -27,7 +27,7 @@ import java.util.List;
  * CandidateTags
  */
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-05-23T14:57:09.146594+01:00[Europe/London]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-05-23T23:03:51.387015+01:00[Europe/London]")
 public class CandidateTags {
   @SerializedName("tags")
   private List<String> tags = new ArrayList<String>();

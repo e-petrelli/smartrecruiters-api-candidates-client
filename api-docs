@@ -1,0 +1,3085 @@
+servers: 
+  - url: https://api.smartrecruiters.com
+openapi: 3.0.1
+info:
+  version: '1'
+  title: Candidates API
+paths:
+  '/candidates/{id}/tags':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    post:
+      responses:
+        '201':
+          description: Added tags
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateTags'
+        '400':
+          description: Adding too many tags
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: No permission to access this candidate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Add new tags to a given candidate. It doesn't replace existing tags.
+      tags:
+        - candidates
+      summary: Add tags to a candidate
+      operationId: candidates.tags.add
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateTags'
+        description: Tags to be added.
+        required: true
+    get:
+      responses:
+        '200':
+          description: Candidate's tags
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateTags'
+        '403':
+          description: No permission to access this candidate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - candidates
+      summary: Get tags for a candidate
+      operationId: candidates.tags.get
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+    put:
+      responses:
+        '201':
+          description: Updated tags
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateTags'
+        '403':
+          description: No permission to access this candidate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: >-
+        Update tags for a given candidate. It replaces all existing tags with
+        the new array provided.
+      tags:
+        - candidates
+      summary: Update tags for a candidate
+      operationId: candidates.tags.replace
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateTags'
+        description: Tags to be set.
+        required: true
+    delete:
+      responses:
+        '204':
+          description: Candidate's tags successfully deleted
+        '403':
+          description: No permission to access this candidate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: >-
+        Delete tags for a given candidate. All tags associated with a candidate
+        are removed.
+      tags:
+        - candidates
+      summary: Delete tags for a candidate
+      operationId: candidates.tags.delete
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+  '/candidates/{id}/onboardingStatus':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    get:
+      deprecated: true
+      responses:
+        '200':
+          description: Onboarding status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingStatus'
+        '404':
+          description: >
+            with codes:
+
+            * **CANDIDATE_NOT_FOUND** when candidate not found,
+
+            * **ONBOARDING_STATUS_NOT_ACTIVE** when Onboarding Status candidate
+            property is not activated,
+
+            * **CANDIDATE_FIELDS_FEATURE_MISSING** when Onboarding Status is not
+            accessible. Required feature: 'Candidate Fields'.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get Onboarding Status for a candidate. Please use `GET /candidates/{id}/jobs/{jobId}/onboardingStatus` instead.
+      tags:
+        - candidates
+      summary: Get Onboarding Status for a candidate
+      operationId: candidates.onboarding.get
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+    put:
+      deprecated: true
+      responses:
+        '204':
+          description: Onboarding status successfully updated.
+        '404':
+          description: >
+            with codes:
+
+            * **CANDIDATE_NOT_FOUND** when candidate not found,
+
+            * **ONBOARDING_STATUS_NOT_ACTIVE** when Onboarding Status custom
+            candidate property is not activated,
+
+            * **CANDIDATE_FIELDS_FEATURE_MISSING** when Onboarding Status is not
+            accessible. Required feature: 'Candidate Fields'.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Set Onboarding Status for a candidate. Please use `PUT /candidates/{id}/jobs/{jobId}/onboardingStatus` instead.
+      tags:
+        - candidates
+      summary: Set Onboarding Status for a candidate
+      operationId: candidates.onboarding.update
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      requestBody:
+        $ref: '#/components/requestBodies/OnboardingStatus'
+  '/candidates/{id}/jobs/{jobId}/onboardingStatus':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    get:
+      responses:
+        '200':
+          description: Onboarding status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingStatus'
+        '404':
+          description: >
+            with codes:
+
+            * **CANDIDATE_NOT_FOUND** when candidate not found,
+
+            * **JOB_NOT_FOUDN** when candidate is not assigned to given job,
+
+            * **ONBOARDING_STATUS_NOT_ACTIVE** when Onboarding Status candidate
+            property is not activated,
+
+            * **CANDIDATE_FIELDS_FEATURE_MISSING** when Onboarding Status is not
+            accessible. Required feature: 'Candidate Fields'.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get Onboarding Status for a candidate associated with given job.
+      tags:
+        - candidates
+      summary: Get Onboarding Status for a candidate associated with given job
+      operationId: candidates.onboarding.getForJob
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+    put:
+      responses:
+        '204':
+          description: Onboarding status successfully updated.
+        '404':
+          description: >
+            with codes:
+
+            * **CANDIDATE_NOT_FOUND** when candidate not found,
+
+            * **JOB_NOT_FOUDN** when candidate is not assigned to given job,
+
+            * **ONBOARDING_STATUS_NOT_ACTIVE** when Onboarding Status candidate
+            property is not activated,
+
+            * **CANDIDATE_FIELDS_FEATURE_MISSING** when Onboarding Status is not
+            accessible. Required feature: 'Candidate Fields'.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Sets Onboarding Status for a candidate associated with given job.
+      tags:
+        - candidates
+      summary: Sets Onboarding Status for a candidate associated with given job
+      operationId: candidates.onboarding.updateForJob
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      requestBody:
+        $ref: '#/components/requestBodies/OnboardingStatus'
+  /candidates:
+    get:
+      responses:
+        '200':
+          description: Candidates matching search criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidates'
+          headers:
+            Link:
+              schema:
+                type: string
+              description: |
+                Links to related resources, in the format defined by
+                [RFC 5988](https://tools.ietf.org/html/rfc5988#section-5).
+                This will include a link with relation type `next` to the
+                next page, if there is a next page.
+        '400':
+          description: >
+            with codes
+
+            * **FIELDS_CRITERIA_SIZE_VIOLATED** when number of elements of query
+            param `propertyId` is not
+              equal to number of elements of query param `propertyValueId`
+            * **SOURCES_CRITERIA_SIZE_VIOLATED** when number of elements of query
+            param `sourceType` is not
+              equal to number of elements of query param `sourceSubType` or not
+              equal to number of elements of query param `sourceValueId`
+            * **SCREENING_QUESTIONS_CRITERIA_SIZE_VIOLATED** when number of elements of query
+            param `questionCategory` is not
+              equal to number of elements of query param `questionFieldId` or not
+              equal to number of elements of query param `questionFieldValueId`
+            * **ONBOARDING_STATUS_NOT_ACTIVE** when Onboarding Status candidate
+            property is not activated or user's
+              company does not have candidate property feature, but user has requested to search candidates by
+              onboardingStatus query parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - candidates
+      summary: Search candidates
+      operationId: candidates.all
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+      parameters:
+        - in: query
+          description: >-
+            keyword search on all candidate fields; case insensitive; e.g. java
+            developer
+          name: q
+          schema:
+            type: string
+        - in: query
+          description: number of elements to return. max value is 100
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - in: query
+          description: number of elements to skip while processing result
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - in: query
+          description: page id of elements to return
+          name: pageId
+          schema:
+            type: string
+        - in: query
+          description: >-
+            job filter to display candidates who applied for a job [id]; can be
+            used repeatedly;
+          name: jobId
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          description: >-
+            location keyword search which looks up a string in a candidate’s
+            location data; can be used repeatedly; case insensitive; e.g. Krakow
+          name: location
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          description: >-
+            average rating filter to display candidates with a specific average
+            rating (integer); can be used repeatedly; e.g. 4
+          name: averageRating
+          explode: true
+          schema:
+            type: array
+            items:
+              type: integer
+              maximum: 5
+              minimum: 1
+        - in: query
+          description: >-
+            candidate’s status filter in a context of a job; can be used
+            repeatedly
+          name: status
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - LEAD
+                - NEW
+                - IN_REVIEW
+                - INTERVIEW
+                - OFFERED
+                - HIRED
+                - REJECTED
+                - WITHDRAWN
+                - TRANSFERRED
+        - in: query
+          description: >-
+            candidate’s consent status filter; can be used repeatedly
+          name: consentStatus
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ConsentStatus'
+        - in: query
+          description: >-
+            candidate’s sub-status filter in a context of a job. Works only in a
+            correlation with a set value for the "status" field.
+          name: subStatus
+          schema:
+            type: string
+        - in: query
+          description: >-
+            tag assigned to a candidate; can be used repeatedly; case
+            insensitive; e.g. fluent english
+          name: tag
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          description: >-
+            ISO8601-formatted time boundaries for the candidate update time,
+            Format: yyyy-MM-ddTHH:mm:ss.SSSZZ
+          name: updatedAfter
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          description: candidate's onboarding status
+          name: onboardingStatus
+          schema:
+            type: string
+            enum:
+              - READY_TO_ONBOARD
+              - ONBOARDING_SUCCESSFUL
+              - ONBOARDING_FAILED
+        - in: query
+          description: candidate's property id (1-N)
+          name: propertyId
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+        - in: query
+          description: candidate's property value id (1-N)
+          name: propertyValueId
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+        - in: query
+          description: candidate's source type (1-N)
+          name: sourceType
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+        - in: query
+          description: candidate's source subtype (1-N)
+          name: sourceSubType
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+        - in: query
+          description: candidate's source value id (1-N)
+          name: sourceValueId
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+        - in: query
+          description: screening question category (1-N)
+          name: questionCategory
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+        - in: query
+          description: screening question field id (1-N)
+          name: questionFieldId
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+        - in: query
+          description: screening question field value id (1-N)
+          name: questionFieldValueId
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+            default: []
+    post:
+      responses:
+        '201':
+          description: Created candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateDetails'
+        '400':
+          description: >
+            with codes
+
+            * **SOURCE_NOT_FOUND** when provided source does not exist,
+
+            * **SUBTYPE_REQUIRED** when there are more sources and subtype
+            parameter is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: >
+            with code **SOURCE_TYPE_NOT_FOUND** when provided source type does
+            not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: >
+        Create a new candidate and assign to a Talent Pool.
+
+
+        **Tracking candidate source**
+
+
+        When adding a new candidate, it's very important you track its source
+        appropriately. In order to associate a source with your app/integration,
+        add below object to a candidate body object for this endpoint:
+
+        ```
+
+        {
+          "sourceDetails": {
+            "sourceTypeId": "string",
+            "sourceSubTypeId": "string",
+            "sourceId": "string"
+          }
+        }
+
+        ```
+
+        **sourceTypeId** - it's a Source Type - available values can be found
+        using [get
+        /configuration/sources](https://dev.smartrecruiters.com/customer-api/live-docs/configuration-api/#/configuration/configuration.source.types)
+        endpoint
+
+
+        **sourceSubTypeId** - it's a Source Subtype, an optional parameter -
+        available values can be found using [get
+        /configuration/sources](https://dev.smartrecruiters.com/customer-api/live-docs/configuration-api/#/configuration/configuration.source.types)
+        endpoint
+
+
+        **sourceId** - it's a Source Id - available values for a given
+        sourceTypeId can be found using [get
+        /configuration/sources/:sourceTypeId/values](https://dev.smartrecruiters.com/customer-api/live-docs/configuration-api/#/configuration/configuration.source.values.all)
+        endpoint
+
+
+        NOTE: Not defining the source will default to **API** source.
+
+
+        NOTE II: In case you can't find an appropriate source to track against
+        you can:
+
+        * Create a custom source for each customer account separately on [this
+        admin
+        page](https://www.smartrecruiters.com/settings/configuration/custom-sources\)
+        (you need to be logged in as an admin to the customer account in order
+        to view this page)
+
+        * Request to
+        [partners@smartrecruiters.com](mailto:partners@smartrecruiters.com)
+        adding a standard source that will be available for all customers if
+        your app/integration is productised (available to all SmartRecruiters
+        customers)
+      tags:
+        - candidates
+      summary: Create a new candidate and assign to a Talent Pool
+      operationId: candidates.add
+      security:
+        - key: []
+        - oauth:
+            - candidates_create
+      requestBody:
+        $ref: '#/components/requestBodies/CandidateInput'
+  /candidates/cv:
+    post:
+      responses:
+        '201':
+          description: Created candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateDetails'
+        '400':
+          description: >
+            with codes
+
+            * **SOURCE_NOT_FOUND** when provided source does not exist,
+
+            * **SUBTYPE_REQUIRED** when there are more sources and subtype
+            parameter is required,
+
+            * **UNPARSABLE_RESUME** when provided resume cannot be parsed, e.g.
+            an image
+
+            * **INCOMPLETE_RESUME** when provided resume does not contain all
+            required information to create a candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: |
+            with code
+            **SOURCE_TYPE_NOT_FOUND** when provided source type does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: 'Parse a resume, create a candidate and assign to a Talent Pool.'
+      tags:
+        - candidates
+      summary: 'Parse a resume, create a candidate and assign to a Talent Pool.'
+      operationId: candidates.resume.add
+      security:
+        - key: []
+        - oauth:
+            - candidates_create
+      requestBody:
+        $ref: '#/components/requestBodies/Resume'
+  /candidates/consent-requests:
+      post:
+        responses:
+          '201':
+            description: |
+              Consent requests has been scheduled.
+
+              The response contains a list of results for each individual consent request in the same order as in the request.
+
+              A single result `status` property value could be:
+              * 202 - consent request successfully scheduled,
+              * 403 - cannot request consent from candidate as no privacy policy has been configured.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ConsentRequestsResults'
+        description: |
+          Read more about GDPR tools on [SmartRecruiters HelpCenter](https://help.smartrecruiters.com/GDPR/GDPR_Tools_for_Companies)
+        tags:
+        - candidates
+        summary: Request consent from multiple candidates
+        operationId: candidates.consent.request.batch
+        security:
+        - key: []
+        - oauth:
+          - candidates_manage
+        requestBody:
+          required: true
+          $ref: '#/components/requestBodies/BatchConsentRequest'
+  /candidates/{id}/consent:
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    get:
+      responses:
+        '200':
+          description: Candidate's latest consent status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateConsentStatus'
+        '403':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get candidate consent status
+      tags:
+      - candidates
+      summary: Status of candidate consent
+      operationId: candidates.consent.status
+      security:
+      - key: []
+      - oauth:
+        - candidates_read
+  '/candidates/{id}':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    get:
+      responses:
+        '200':
+          description: Candidate details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateDetails'
+        '401':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get details of a candidate
+      tags:
+        - candidates
+      summary: Get details of a candidate
+      operationId: candidates.get
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+    delete:
+      responses:
+        '204':
+          description: Candidate successfully deleted
+        '403':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Candidate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Delete candidate
+      tags:
+        - candidates
+      summary: Delete Candidate
+      operationId: candidates.delete
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+    patch:
+      responses:
+        '200':
+          description: Candidate updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateDetails'
+        '404':
+          description: |
+            with code:
+            * **CANDIDATE_NOT_FOUND** when candidate not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Update candidate details
+      tags:
+        - candidates
+      summary: Update candidate personal information
+      operationId: candidates.update
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalDetails'
+        description: Candidate personal information
+  '/candidates/{id}/attachments':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    get:
+      deprecated: true
+      responses:
+        '200':
+          description: Candidate's attachments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachments'
+        '401':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Attachment file access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get list of candidate's attachments.
+      tags:
+        - candidates
+      summary: Get list candidate's attachments.
+      operationId: candidates.attachments.list
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+    post:
+      deprecated: true
+      responses:
+        '201':
+          description: Candidate's attachment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+        '400':
+          description: >
+            with codes:
+
+            * **FILE_ALREADY_EXIST** when file aleady exists,
+
+            * **INVALID_FILE** when file extension not allowed, corrupted file
+            or wrong file type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Attach files to a candidate.
+      tags:
+        - candidates
+      summary: Attach files to a candidate.
+      operationId: candidates.attachments.add
+      security:
+        - key: []
+        - oauth:
+            - candidates_create
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                attachmentType:
+                  description: Type of attachment you want to upload.
+                  type: string
+                  enum:
+                    - GENERIC_FILE
+                    - RESUME
+                    - COVER_LETTER
+                  default: GENERIC_FILE
+                file:
+                  description: The file to upload.
+                  type: string
+                  format: binary
+              required:
+                - attachmentType
+                - file
+  '/candidates/{id}/attachments/{attachmentId}':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    get:
+      deprecated: true
+      responses:
+        '200':
+          description: Attachment content
+        '401':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: with code FILE_NOT_FOUND when file does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get a candidate's attachment.
+      tags:
+        - candidates
+      summary: Get a candidate's attachment.
+      operationId: candidates.attachments.get
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+      parameters:
+        - in: path
+          description: Identifier of an attachment
+          name: attachmentId
+          required: true
+          schema:
+            type: string
+  '/candidates/{id}/jobs/{jobId}/attachments':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    get:
+      responses:
+        '200':
+          description: Candidate's attachments in context of given job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateAttachmentsForJob'
+        '403':
+          description: with code **PERMISSION_DENIED** when you are not permitted to view candidate attachments in context of given job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: with code **JOB_NOT_FOUND** when candidate is not assigned to given job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get list of candidate's attachments in context of given job.
+      tags:
+      - candidates
+      summary: Get list of candidate's attachments in context of given job.
+      operationId: candidates.attachments.listForJob
+      security:
+      - key: []
+      - oauth:
+        - candidates_read
+    post:
+      responses:
+        '201':
+          description: Candidate's attachment in context of given job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateAttachmentForJob'
+        '400':
+          description: >
+            with codes:
+
+            * **FILE_ALREADY_EXIST** when file already exists,
+
+            * **INVALID_FILE** when file extension not allowed, corrupted file or wrong file type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: with code **PERMISSION_DENIED** when you are not permitted to add file to candidate in context of given job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: with code **JOB_NOT_FOUND** when candidate is not assigned to given job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Attach file to candidate in context of given job.
+      tags:
+      - candidates
+      summary: Attach file to candidate in context of given job.
+      operationId: candidates.attachments.addForJob
+      security:
+      - key: []
+      - oauth:
+        - candidates_create
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                attachmentType:
+                  description: Type of attachment you want to upload.
+                  type: string
+                  enum:
+                  - GENERIC_FILE
+                  - RESUME
+                  - COVER_LETTER
+                  default: GENERIC_FILE
+                file:
+                  description: File to upload.
+                  type: string
+                  format: binary
+              required:
+              - attachmentType
+              - file
+  '/candidates/attachments/{attachmentId}':
+    parameters:
+    - $ref: '#/components/parameters/attachmentId'
+    get:
+      responses:
+        '200':
+          description: Candidate's Attachment
+        '403':
+          description: >
+            with codes:
+
+            * **PERMISSION_DENIED** when you are not permitted to download attachment,
+
+            * **MALWARE_DETECTED** when file has been marked as malicious.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: with code **FILE_NOT_FOUND** when attachment does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get candidate's attachment.
+      tags:
+      - candidates
+      summary: Get candidate's attachment.
+      operationId: candidates.attachments.getForJob
+      security:
+      - key: []
+      - oauth:
+        - candidates_read
+    delete:
+      responses:
+        '204':
+          description: Attachment successfully deleted
+        '403':
+          description: with code **PERMISSION_DENIED** when you are not permitted to delete attachment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: with code **FILE_NOT_FOUND** when attachment does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Delete attachment.
+      tags:
+      - candidates
+      summary: Delete attachment.
+      operationId: candidates.attachments.deleteForJob
+      security:
+      - key: []
+      - oauth:
+        - candidates_manage
+  '/candidates/{id}/jobs/{jobId}/status':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    put:
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: >
+            with codes
+
+            * **NO_REASON_SUPPORT_FOR_STATUS** when reason is not available for
+            given status (availably only for
+
+            REJECTED and WITHDRAWN
+
+            * **REASON_NOT_FOUND** when given reason does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: |
+            with codes
+            * **APPROVAL_PROCESS_ENABLED** when approval process is enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Candidate is not assigned to given job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Update a candidate's status
+      tags:
+        - candidates
+      summary: Update a candidate's status
+      operationId: candidates.status.update
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      requestBody:
+        $ref: '#/components/requestBodies/CandidateStatus'
+  '/candidates/{id}/status':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    put:
+      deprecated: true
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: >
+            with codes
+
+            * **NO_REASON_SUPPORT_FOR_STATUS** when reason is not available for
+            given status (availably only for
+
+            REJECTED and WITHDRAWN
+
+            * **REASON_NOT_FOUND** when given reason does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: |
+            with codes
+            * **APPROVAL_PROCESS_ENABLED** when approval process is enabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Update a candidate's status on primary assignment. Please use `PUT /candidates/{id}/jobs/{jobId}/status` instead.
+      tags:
+        - candidates
+      summary: Update a candidate's status on primary assignment
+      operationId: candidates.status.updatePrimary
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      requestBody:
+        $ref: '#/components/requestBodies/CandidateStatus'
+  '/candidates/{id}/status/history':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    get:
+      deprecated: true
+      responses:
+        '200':
+          description: Candidate's status history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateStatusHistoryList'
+        '401':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get candidate's status history. Please use `GET /candidates/{id}/jobs/{jobId}/status/history` instead.
+      tags:
+        - candidates
+      summary: Get candidate's status history
+      operationId: candidates.status.history.get
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+            - candidate_status_read
+  '/candidates/{id}/jobs/{jobId}/status/history':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    get:
+      responses:
+        '200':
+          description: Candidate's status history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateStatusHistoryList'
+        '403':
+          description: |
+            with code **NO_ACCESS_TO_CANDIDATE** when not permitted to see this candidate
+            with code **NO_ACCESS_TO_JOB** when not permitted to see this candidate in context of given job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: |
+            with code **CANDIDATE_NOT_FOUND** when candidate not found
+            with code **JOB_NOT_FOUND** when candidate is not assigned to given job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get candidate's status history for a candidate's job
+      tags:
+        - candidates
+      summary: Get candidate's status history for a candidate's job
+      operationId: candidates.status.history.getForJob
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+            - candidate_status_read
+  '/candidates/{id}/jobs/{jobId}/source':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    put:
+      responses:
+        '204':
+          description: ''
+        '400':
+          description: >
+            with codes:
+
+            * **INVALID_SOURCE_TYPE** when provided type does not exist,
+
+            * **SUBTYPE_REQUIRED** when there are more sources and subtype
+            parameter is required,
+
+            * **INVALID_SOURCE** when source id does not exist in provided type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Candidate access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Candidate is not assigned to given job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Update a candidate's source
+      tags:
+        - candidates
+      summary: Update a candidate's source
+      operationId: candidates.source.update
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CandidateSource'
+        description: Candidate source to be set
+        required: true
+  '/candidates/{id}/properties':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    get:
+      deprecated: true
+      responses:
+        '200':
+          description: Candidate property values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateProperties'
+        '403':
+          description: Candidate properties access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: |
+            with code **CANDIDATE_NOT_FOUND** when candidate does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: |
+        Please use `GET /candidates/{id}/jobs/{jobId}/properties` instead.
+        Returns
+        ```
+        {}
+        ```
+        when there is no value set for a candidate property.
+      tags:
+        - candidates
+      summary: Get candidate property values for a candidate
+      operationId: candidates.properties.get
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+      parameters:
+        - in: query
+          description: context for candidate properties to display
+          name: context
+          schema:
+            type: string
+            enum:
+              - PROFILE
+              - OFFER_FORM
+              - HIRE_FORM
+  '/candidates/{id}/jobs/{jobId}/properties':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    get:
+      responses:
+        '200':
+          description: Candidate property values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateProperties'
+        '403':
+          description: Candidate properties access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: >
+            with code **JOB_NOT_FOUND** when candidate is not assigned to given
+            job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: |
+        Returns
+        ```
+        {}
+        ```
+        when there is no value set for a candidate property.
+      tags:
+        - candidates
+      summary: Get candidate property values for a candidate's job
+      operationId: candidates.properties.getForJob
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+      parameters:
+        - in: query
+          description: context for candidate properties to display
+          name: context
+          schema:
+            type: string
+            enum:
+              - PROFILE
+              - OFFER_FORM
+              - HIRE_FORM
+  '/candidates/{id}/properties/{propertyId}':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    put:
+      deprecated: true
+      responses:
+        '204':
+          description: Property successfully updated.
+        '400':
+          description: >
+            with codes
+
+            * **COUNTRY_NOT_FOUND** when candidate property of COUNTRY type and
+            country with provided code does not exist,
+
+            * **REGION_NOT_FOUND** when candidate property of REGION type and
+            region with provided code does not exist,
+
+            * **USER_NOT_FOUND** when candidate property of USER type and user
+            with provided id does not exist,
+
+            * **CURRENCY_NOT_FOUND** when candidate property of CURRENCY type
+            and currency with provided code does not exist,
+
+            * **INVALID_TEXT_FORMAT** when candidate property of TEXT type
+            and its value contains forbidden characters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Candidate properties access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: >
+            with code **PROPERTY_NOT_FOUND** when candidate property does not
+            exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: >
+        Please use `PUT /candidates/{id}/jobs/{jobId}/properties/{propertyId}` instead.
+        Set a candidate property value for the candidate.
+
+        Below you can find a list of value examples, dependent on different
+        candidate property types.
+
+        * **BOOLEAN**
+
+        ```
+
+        { "value": true }
+
+        ```
+
+        Value has to be `true` or `false`.
+
+        * **COUNTRY**
+
+        ```
+
+        { "value": "us" }
+
+        ```
+
+        Value has to be lowercase string in ISO 3166-1 alpha-2 format.
+
+        * **CURRENCY**
+
+        ```
+
+        {
+          "value": {
+            "code": "GBP",
+            "value": 23232
+          }
+        }
+
+        ```
+
+        Code of value is a currency code in ISO 4217 format.
+
+        * **DATE**
+
+        ```
+
+        { "value": "2015-11-17T23:00:00.000Z" }
+
+        ```
+
+        * **NUMBER, PERCENT**
+
+        ```
+
+        { "value": 42 }
+
+        ```
+
+        * **REGION**
+
+        ```
+
+        { "value": "us-wa" }
+
+        ```
+
+        Value has to be lowercase string in ISO 3166-2 compatible format.
+
+        * **SINGLE_SELECT**
+
+        ```
+
+        { "value": "f6fe768f-b5e6-4794-9938-c2f42ab0a572" }
+
+        ```
+
+        Value has to be an id of candidate property value (provided by GET
+        /configuration/candidate-properties/{propertyId}/values).
+
+        * **TEXT**
+
+        ```
+
+        { "value": "Example text" }
+
+        ```
+
+        * **USER**
+
+        ```
+
+        { "value": "50fe861de4b00265edec6775" }
+
+        ```
+
+        Value has to be a valid user id
+
+
+        To reset a value for any of the above types, please pass
+
+        ```
+
+        {}
+
+        ```
+      tags:
+        - candidates
+      summary: Add/update candidate property value
+      operationId: candidates.properties.values.update
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      parameters:
+        - in: path
+          description: Identifier of a Candidate Property
+          name: propertyId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/CandidatePropertyInputValue'
+  '/candidates/{id}/jobs/{jobId}/properties/{propertyId}':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    put:
+      responses:
+        '204':
+          description: Property successfully updated.
+        '400':
+          description: >
+            with codes
+
+            * **COUNTRY_NOT_FOUND** when candidate property of COUNTRY type and
+            country with provided code does not exist,
+
+            * **REGION_NOT_FOUND** when candidate property of REGION type and
+            region with provided code does not exist,
+
+            * **USER_NOT_FOUND** when candidate property of USER type and user
+            with provided id does not exist,
+
+            * **CURRENCY_NOT_FOUND** when candidate property of CURRENCY type
+            and currency with provided code does not exist,
+
+            * **VALUE_NOT_FOUND** when candidate property of SINGLE_SELECT type
+            and value with provided id does not exist,
+
+            * **INVALID_TEXT_FORMAT** when candidate property of TEXT type
+            and its value contains forbidden characters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Candidate properties access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: |
+            with codes
+            * **PROPERTY_NOT_FOUND** when candidate property does not exist
+            * **JOB_NOT_FOUND** when candidate is not assigned to given job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: |
+        Set a candidate property value for the candidate.
+
+        Below you can find a list of value examples, dependent on different
+        candidate property types.
+
+        ### BOOLEAN
+
+        ```
+        { "value": true }
+        ```
+
+        Value has to be `true` or `false`.
+
+        ### COUNTRY
+
+        ```
+        { "value": "us" }
+        ```
+
+        Value has to be lowercase string in ISO 3166-1 alpha-2 format.
+
+        ### CURRENCY
+
+        ```
+        {
+          "value": {
+            "code": "GBP",
+            "value": 23232
+          }
+        }
+        ```
+
+        Code of value is a currency code in ISO 4217 format.
+
+        ### DATE
+
+        ```
+        { "value": "2015-11-17T23:00:00.000Z" }
+        ```
+
+        ### NUMBER, PERCENT
+
+        ```
+        { "value": 42 }
+        ```
+
+        ### REGION
+
+        ```
+        { "value": "us-wa" }
+        ```
+
+        Value has to be lowercase string in ISO 3166-2 compatible format.
+
+        ### SINGLE_SELECT
+
+        ```
+        { "value": "f6fe768f-b5e6-4794-9938-c2f42ab0a572" }
+        ```
+
+        Value has to be an id of candidate property value (provided by `GET
+        /configuration/candidate-properties/{propertyId}/values`).
+
+        ### TEXT
+
+        ```
+        { "value": "Example text" }
+        ```
+
+        ### USER
+
+        ```
+        { "value": "50fe861de4b00265edec6775" }
+        ```
+
+        Value has to be a valid user id
+
+        ### Resetting a value
+
+        To reset a value for any of the above types, please pass:
+
+        ```
+        {}
+        ```
+      tags:
+        - candidates
+      summary: Add/update candidate property value
+      operationId: candidates.properties.values.updateForJob
+      security:
+        - key: []
+        - oauth:
+            - candidates_manage
+      parameters:
+        - in: path
+          description: Identifier of a Candidate Property
+          name: propertyId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/CandidatePropertyInputValue'
+  '/candidates/{id}/jobs/{jobId}/screening-answers':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    get:
+      responses:
+        '200':
+          description: Candidate screening question answers for a candidate's job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningAnswers'
+              example:
+                totalFound: 10
+                content:
+                - id: 0e91d24a-d85b-487d-99ef-eeaca7277d77
+                  type: radio
+                  category: drivingCurrent
+                  name: Driving Current
+                  label: Do you have a current driver's license?
+                  records:
+                  - fields:
+                    - id: value
+                      label: Value
+                      values:
+                      - id: '0'
+                        label: 'No'
+                - id: a00c06fb-6693-4138-a005-57c92ab796b6
+                  type: textarea
+                  category: 04f8fac1-8799-47ef-af54-7dcc4cd10bb9
+                  name: Free text question
+                  label: Free text question
+                  records:
+                  - fields:
+                    - id: value
+                      label: Value
+                      values:
+                      - id: Long text answer for free text questions
+                        label: Long text answer for free text questions
+                - id: a98ba616-d7ed-43e5-b5b5-23a9eca031e3
+                  type: checkbox
+                  category: ba9acad1-71b3-42a1-a059-c05e1bbbc301
+                  name: Checkbox question
+                  label: Checkbox question
+                  records:
+                  - fields:
+                    - id: confirm
+                      label: Checkbox question
+                      values:
+                      - id: '1'
+                        label: Confirmed
+                - id: eb93fc47-6f72-4d97-a60e-a265f8621e84
+                  type: checkbox
+                  category: 20ef7ecb-09c4-4afd-80fc-6a2700a1c3ba
+                  name: Legacy acknowledgment question
+                  label: Legacy acknowledgment question - replaced by checkbox
+                  records:
+                  - fields:
+                    - id: confirm
+                      label: Legacy acknowledgment question - replaced by checkbox
+                      values:
+                      - id: '1'
+                        label: Confirmed
+                - id: 40bc2e3b-fd1c-47e8-b514-2365fc705447
+                  type: eeo
+                  category: eeoInformation
+                  name: EEO - Race and Gender
+                  label: Gender, Race and Ethnicity [(definitions)](https://smartrecruiters.com/oneclick/static/html/en/eeoGeneral.html)
+                  records:
+                  - fields:
+                    - id: gender
+                      label: Gender
+                      values:
+                      - id: '0'
+                        label: Male
+                    - id: ethnicity
+                      label: Race/Ethnicity
+                      values:
+                      - id: '6'
+                        label: Prefer not to answer
+                - id: f9ffb0eb-c8e7-4c18-bfa3-7fb22af7da03
+                  type: currency
+                  category: b2e9b169-77a6-4425-b82a-8dd80c84005b
+                  name: Currency question
+                  label: Currency question
+                  records:
+                  - fields:
+                    - id: amount
+                      label: Value
+                      values:
+                      - id: '1234'
+                        label: '1234'
+                - id: 910ceed4-a708-4c22-8c10-f53e1b053a7d
+                  type: select
+                  category: 445c45ae-8e5a-48c6-9e05-0846d35bfa6d
+                  name: Multiple choice dropdown
+                  label: Multiple choice dropdown
+                  records:
+                  - fields:
+                    - id: value
+                      label: Value
+                      values:
+                      - id: d6c2c580-5f51-4960-a6e5-a8bc8849f35c
+                        label: third value
+                      - id: 5e9cc528-9640-454d-8ef6-19bd06ce2ea9
+                        label: second value
+                      - id: 10a341a3-b8ff-4121-9dee-75b442e64f00
+                        label: first value
+                - id: 1549f34c-fdda-459a-8c01-be8ab6cef19f
+                  type: languages
+                  category: languages
+                  name: Languages
+                  label: Languages
+                  records:
+                  - fields:
+                    - id: lang
+                      label: Language
+                      values:
+                      - id: English
+                        label: English
+                    - id: level
+                      label: Proficiency level
+                      values:
+                      - id: '2'
+                        label: Advanced
+                  - fields:
+                    - id: lang
+                      label: Language
+                      values:
+                      - id: Spanish
+                        label: Spanish
+                    - id: level
+                      label: Proficiency level
+                      values:
+                      - id: '0'
+                        label: Beginner
+                  - fields:
+                    - id: lang
+                      label: Language
+                      values:
+                      - id: French
+                        label: French
+                    - id: level
+                      label: Proficiency level
+                      values:
+                      - id: '1'
+                        label: Intermediate
+                - id: 2bb9faa5-dbe9-42dc-9c00-381dddb0abb6
+                  type: work_shifts
+                  category: preferredWorkShifts
+                  name: Work Shifts
+                  label: What are your preferred work shifts?
+                  records:
+                  - fields:
+                    - id: day
+                      label: Day
+                      values:
+                      - id: '2'
+                        label: Weekdays
+                    - id: from
+                      label: From
+                      values:
+                      - id: '8'
+                        label: 08:00 AM
+                    - id: to
+                      label: To
+                      values:
+                      - id: '16'
+                        label: 04:00 PM
+                  - fields:
+                    - id: day
+                      label: Day
+                      values:
+                      - id: '2'
+                        label: Weekdays
+                    - id: from
+                      label: From
+                      values:
+                      - id: '10'
+                        label: 10:00 AM
+                    - id: to
+                      label: To
+                      values:
+                      - id: '14'
+                        label: 02:00 PM
+                - id: 6c0ed428-f167-4ab0-967d-564560617e7b
+                  type: text
+                  category: yourName
+                  name: Your Name
+                  label: Your Name
+                  records:
+                  - fields:
+                    - id: value
+                      values:
+                      - id: John
+                        label: John
+        '403':
+          description: Screening Question Answers access forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Screening Question Answers not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: >
+        Returns candidate screening question answers for a candidate's job.
+        Returns an empty array when there is no screening answers for given
+        candidate's job.
+
+
+        UUID in question category indicates custom question. Other value
+        indicates predefined library question.
+
+
+        In order to create human readable format of answers please use label
+        properties. Ignore labels for answers with single field.
+
+        Based on labels from included example you can get following text:
+
+
+        ```text
+
+        Do you have a current driver's license?
+         - No
+
+        Free text question
+         - Long text answer for free text questions
+
+        Checkbox question
+         - Confirmed
+
+        Legacy acknowledgment question - replaced by checkbox
+         - Confirmed
+
+        Gender, Race and Ethnicity
+        [(definitions)](https://smartrecruiters.com/oneclick/static/html/en/eeoGeneral.html)
+         - Gender: Male
+         - Race/Ethnicity: Prefer not to answer
+
+        Currency question
+         - 1234
+
+        Multiple choice dropdown
+         - third value, second value, first value
+
+        Languages
+         1)
+         - Language: English
+         - Proficiency level: Advanced
+         2)
+         - Language: Spanish
+         - Proficiency level: Beginner
+         3)
+         - Language: French
+         - Proficiency level: Intermediate
+
+        What are your preferred work shifts?
+
+        1)
+         - Day: Weekdays
+         - From: 08:00 AM
+         - To: 04:00 PM
+        2)
+         - Day: Weekdays
+         - From: 10:00 AM
+         - To: 02:00 PM
+
+        Your Name
+         - John
+        ```
+      tags:
+        - candidates
+      summary: Get candidate screening answers for a candidate's job
+      operationId: candidates.screening-answers.get
+      security:
+        - key: []
+        - oauth:
+            - candidates_read
+  '/jobs/{jobId}/candidates':
+    parameters:
+    - $ref: '#/components/parameters/jobId'
+    post:
+      responses:
+        '201':
+          description: Created candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateDetails'
+        '400':
+          description: >
+            with codes
+
+            * **SOURCE_NOT_FOUND** when provided source does not exist,
+
+            * **SUBTYPE_REQUIRED** when there are more sources and subtype
+            parameter is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: |
+            with code **PERMISSION_DENIED** when job access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: >
+            with code **SOURCE_TYPE_NOT_FOUND** when provided source type does
+            not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: >
+        Create a new candidate and assign to a job.
+
+
+        **Tracking candidate source**
+
+
+        When adding a new candidate, it's very important you track its source
+        appropriately. In order to associate a source with your app /
+        integration, add the below object to a candidate body object for this
+        endpoint:
+
+        ```
+
+        {
+          "sourceDetails": {
+            "sourceTypeId": "string",
+            "sourceSubTypeId": "string",
+            "sourceId": "string"
+          }
+        }
+
+        ```
+
+        **sourceTypeId** - it's a Source Type - available values can be found
+        using [get
+        /configuration/sources](https://dev.smartrecruiters.com/customer-api/live-docs/configuration-api/#/configuration/configuration.source.types)
+        endpoint
+
+
+        **sourceSubTypeId** - it's a Source Subtype, an optional parameter -
+        available values can be found using [get
+        /configuration/sources](https://dev.smartrecruiters.com/customer-api/live-docs/configuration-api/#/configuration/configuration.source.types)
+        endpoint
+
+
+        **sourceId** - it's a Source Id - available values for a given
+        sourceTypeId can be found using [get
+        /configuration/sources/:sourceTypeId/values](https://dev.smartrecruiters.com/customer-api/live-docs/configuration-api/#/configuration/configuration.source.values.all)
+        endpoint
+
+
+        NOTE: Not defining the source will default to **API** source.
+
+
+        NOTE II: In case you can't find an appropriate source to track against
+        you can:
+
+        * Create a custom source for each customer account separately on [this
+        admin
+        page](https://www.smartrecruiters.com/settings/configuration/custom-sources\)
+        (you need to be logged in as an admin to the customer account in order
+        to view this page)
+
+        * Request to
+        [partners@smartrecruiters.com](mailto:partners@smartrecruiters.com)
+        adding a standard source that will be available for all customers if
+        your app / integration is productised (available to all SmartRecruiters
+        customers)
+      tags:
+      - candidates
+      summary: Create a new candidate and assign to a job
+      operationId: candidates.addToJob
+      security:
+      - key: []
+      - oauth:
+        - candidates_create
+      requestBody:
+        $ref: '#/components/requestBodies/CandidateInput'
+  '/jobs/{jobId}/candidates/cv':
+    parameters:
+    - $ref: '#/components/parameters/jobId'
+    post:
+      responses:
+        '201':
+          description: Created candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateDetails'
+        '400':
+          description: >
+            with codes
+
+            * **SOURCE_NOT_FOUND** when provided source does not exist,
+
+            * **SUBTYPE_REQUIRED** when there are more sources and subtype
+            parameter is required
+
+            * **UNPARSABLE_RESUME** when provided resume cannot be parsed, e.g.
+            an image
+
+            * **INCOMPLETE_RESUME** when provided resume does not contain all
+            required information to create a candidate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Job access denied.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: |
+            with code
+            **SOURCE_TYPE_NOT_FOUND** when provided source type does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: 'Parse a resume, create a candidate and assign to a job.'
+      tags:
+      - candidates
+      summary: 'Parse a resume, create a candidate and assign to a job.'
+      operationId: candidates.resume.addToJob
+      security:
+      - key: []
+      - oauth:
+        - candidates_create
+      requestBody:
+        $ref: '#/components/requestBodies/Resume'
+  '/candidates/{id}/jobs/{jobId}':
+    parameters:
+    - $ref: '#/components/parameters/candidateId'
+    - $ref: '#/components/parameters/jobId'
+    get:
+      responses:
+        '200':
+          description: Candidate's application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '403':
+          description: Permission denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Application not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      description: Get details of a candidate's application to a job
+      tags:
+      - candidates
+      summary: Get details of a candidate's application to a job
+      operationId: candidates.getApplication
+      security:
+      - key: []
+      - oauth:
+        - candidates_read
+components:
+  requestBodies:
+    OnboardingStatus:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OnboardingStatus'
+      description: Onboarding status.
+      required: true
+    CandidatePropertyInputValue:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CandidatePropertyInputValue'
+      description: Input value of the candidate property.
+    CandidateInput:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CandidateInput'
+      description: Candidate object that needs to be created.
+      required: true
+    Resume:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              sourceTypeId:
+                description: Candidate Source type id
+                type: string
+              sourceSubTypeId:
+                description: Candidate Source subtype id
+                type: string
+              sourceId:
+                description: Candidate Source id
+                type: string
+              internal:
+                description: Mark as company employee
+                type: boolean
+              file:
+                description: The resume file to parse.
+                type: string
+                format: binary
+            required:
+              - file
+    CandidateStatus:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CandidateStatus'
+      description: Candidate Status to be set
+    BatchConsentRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - content
+            properties:
+              content:
+                type: array
+                minItems: 1
+                maxItems: 1000
+                items:
+                  $ref: '#/components/schemas/ConsentRequest'
+  securitySchemes:
+    key:
+      type: apiKey
+      in: header
+      name: x-smarttoken
+    oauth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://www.smartrecruiters.com/identity/oauth/allow'
+          tokenUrl: 'https://www.smartrecruiters.com/identity/oauth/token'
+          scopes:
+            candidates_read: Access Candidates
+            candidates_create: Create Candidates
+            candidates_offers_read: Access Offer Terms
+            candidates_manage: Manage Candidate Status and Properties
+            candidate_status_read: Access Candidate's status
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      required:
+        - code
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    CandidateTags:
+      type: object
+      required:
+        - tags
+      properties:
+        tags:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            maxLength: 50
+    OnboardingStatus:
+      type: object
+      required:
+        - onboardingStatus
+      properties:
+        onboardingStatus:
+          type: string
+          enum:
+            - READY_TO_ONBOARD
+            - ONBOARDING_SUCCESSFUL
+            - ONBOARDING_FAILED
+    Candidates:
+      type: object
+      required:
+        - limit
+        - offset
+        - totalFound
+        - content
+      properties:
+        limit:
+          type: integer
+        offset:
+          type: integer
+        totalFound:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Candidate'
+    Candidate:
+      type: object
+      required:
+        - id
+        - internal
+        - firstName
+        - lastName
+        - createdOn
+        - actions
+      properties:
+        id:
+          type: string
+        internal:
+          type: boolean
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        location:
+          $ref: '#/components/schemas/CandidateLocation'
+        averageRating:
+          type: number
+        tags:
+          type: array
+          items:
+            type: string
+        consent:
+          type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/ConsentStatus'
+        primaryAssignment:
+          type: object
+          required:
+            - job
+            - status
+          properties:
+            job:
+              type: object
+              required:
+                - id
+                - title
+                - actions
+              properties:
+                id:
+                  type: string
+                title:
+                  type: string
+                actions:
+                  type: object
+                  required:
+                    - details
+                  properties:
+                    details:
+                      $ref: '#/components/schemas/Action'
+            status:
+              $ref: '#/components/schemas/CandidateStatusEnum'
+            subStatus:
+              type: string
+        secondaryAssignments:
+          type: array
+          items:
+            type: object
+            required:
+              - job
+            properties:
+              job:
+                type: object
+                required:
+                  - id
+                  - actions
+                properties:
+                  id:
+                    type: string
+                  actions:
+                    type: object
+                    required:
+                      - details
+                    properties:
+                      details:
+                        $ref: '#/components/schemas/Action'
+        actions:
+          type: object
+          required:
+            - details
+            - properties
+          properties:
+            details:
+              $ref: '#/components/schemas/Action'
+            properties:
+              $ref: '#/components/schemas/Action'
+    PersonalDetails:
+      type: object
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+        lastName:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        location:
+          $ref: '#/components/schemas/CandidateLocation'
+        web:
+          $ref: '#/components/schemas/WebProfile'
+    CandidateInput:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+      properties:
+        firstName:
+          type: string
+          minLength: 1
+        lastName:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        location:
+          $ref: '#/components/schemas/CandidateLocation'
+        web:
+          $ref: '#/components/schemas/WebProfile'
+        tags:
+          type: array
+          items:
+            type: string
+        education:
+          type: array
+          default: []
+          items:
+            $ref: '#/components/schemas/Education'
+        experience:
+          type: array
+          default: []
+          items:
+            $ref: '#/components/schemas/Experience'
+        sourceDetails:
+          $ref: '#/components/schemas/CandidateSource'
+        internal:
+          type: boolean
+    CandidateDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        internal:
+          type: boolean
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        location:
+          $ref: '#/components/schemas/CandidateLocation'
+        web:
+          $ref: '#/components/schemas/WebProfile'
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        averageRating:
+          type: number
+        education:
+          type: array
+          items:
+            $ref: '#/components/schemas/Education'
+        experience:
+          type: array
+          items:
+            $ref: '#/components/schemas/Experience'
+        primaryAssignment:
+          allOf:
+            - $ref: '#/components/schemas/Job'
+            - $ref: '#/components/schemas/Assignment'
+        secondaryAssignments:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/Job'
+            - $ref: '#/components/schemas/Assignment'
+        actions:
+          type: object
+          required:
+            - properties
+          properties:
+            properties:
+              $ref: '#/components/schemas/Action'
+            attachments:
+              $ref: '#/components/schemas/Action'
+            consent:
+              $ref: '#/components/schemas/Action'
+    CandidateLocation:
+      type: object
+      properties:
+        country:
+          type: string
+          minLength: 1
+        countryCode:
+          type: string
+          minLength: 2
+          maxLength: 2
+        regionCode:
+          type: string
+        region:
+          type: string
+        city:
+          type: string
+          minLength: 1
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+    Attachments:
+      type: object
+      required:
+        - totalFound
+        - content
+      properties:
+        totalFound:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+    Attachment:
+      type: object
+      required:
+        - id
+        - actions
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        contentType:
+          type: string
+        actions:
+          type: object
+          required:
+            - download
+          properties:
+            download:
+              $ref: '#/components/schemas/Action'
+    CandidateAttachmentsForJob:
+      type: object
+      required:
+      - totalFound
+      - content
+      properties:
+        totalFound:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CandidateAttachmentForJob'
+    CandidateAttachmentForJob:
+      type: object
+      required:
+      - id
+      - name
+      - type
+      - contentType
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        contentType:
+          type: string
+        actions:
+          type: object
+          required:
+          - download
+          - remove
+          properties:
+            download:
+              $ref: '#/components/schemas/Action'
+            remove:
+              $ref: '#/components/schemas/Action'
+    CandidateStatusEnum:
+      type: string
+      enum:
+        - LEAD
+        - NEW
+        - IN_REVIEW
+        - INTERVIEW
+        - OFFERED
+        - HIRED
+        - REJECTED
+        - WITHDRAWN
+        - TRANSFERRED
+    CandidateStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/CandidateStatusEnum'
+        subStatus:
+          type: string
+        startsOn:
+          type: string
+          format: date-time
+        reason:
+          type: string
+          description: >-
+            id of rejection (GET /configuration/rejection-reasons) or withdrawal
+            (GET /configuration/withdrawal-reasons) reason.
+    CandidateStatusHistoryList:
+      type: object
+      properties:
+        totalFound:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CandidateStatusHistoryListElem'
+    CandidateProperties:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CandidateProperty'
+    CandidateProperty:
+      type: object
+      required:
+        - id
+        - label
+        - type
+        - value
+        - actions
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        type:
+          $ref: '#/components/schemas/CandidatePropertyType'
+        value:
+          type: string
+        actions:
+          type: object
+          required:
+            - configuration
+          properties:
+            configuration:
+              $ref: '#/components/schemas/Action'
+    CandidatePropertyInputValue:
+      type: object
+      properties:
+        value:
+          description: 'string, number, boolean or object'
+    Application:
+      allOf:
+      - $ref: '#/components/schemas/Assignment'
+      - $ref: '#/components/schemas/ApplicationUrl'
+    Assignment:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/CandidateStatusEnum'
+        subStatus:
+          type: string
+        startsOn:
+          type: string
+          format: date-time
+        source:
+          type: string
+        reasonOfRejection:
+          $ref: '#/components/schemas/Property'
+        reasonOfWithdrawal:
+          $ref: '#/components/schemas/Property'
+        actions:
+          type: object
+          properties:
+            sourceDetails:
+              $ref: '#/components/schemas/Action'
+    ApplicationUrl:
+      description: >
+        url property of a retrieved application represents current location of its details.
+        Please be aware that the resource location may change in the future.
+      type: object
+      properties:
+        url:
+          type: string
+    Job:
+      type: object
+      properties:
+        job:
+          type: object
+          properties:
+            id:
+              type: string
+            title:
+              type: string
+            actions:
+              type: object
+              required:
+              - details
+              properties:
+                details:
+                  $ref: '#/components/schemas/Action'
+                positionDetails:
+                  $ref: '#/components/schemas/Action'
+    Actions:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Action'
+    Action:
+      type: object
+      required:
+        - url
+        - method
+      properties:
+        url:
+          type: string
+        method:
+          type: string
+          enum:
+            - GET
+            - POST
+            - PUT
+            - PATCH
+            - OPTIONS
+            - DELETE
+            - HEAD
+            - CONNECT
+    WebProfile:
+      type: object
+      properties:
+        skype:
+          type: string
+        linkedin:
+          type: string
+        facebook:
+          type: string
+        twitter:
+          type: string
+        website:
+          type: string
+    Education:
+      type: object
+      properties:
+        institution:
+          type: string
+          minLength: 1
+        degree:
+          type: string
+          minLength: 1
+        major:
+          type: string
+          minLength: 1
+        current:
+          type: boolean
+        location:
+          type: string
+        startDate:
+          $ref: '#/components/schemas/When'
+        endDate:
+          $ref: '#/components/schemas/When'
+        description:
+          type: string
+    Experience:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+        company:
+          type: string
+          minLength: 1
+        current:
+          type: boolean
+        startDate:
+          $ref: '#/components/schemas/When'
+        endDate:
+          $ref: '#/components/schemas/When'
+        location:
+          type: string
+        description:
+          type: string
+    CandidateSource:
+      type: object
+      required:
+        - sourceTypeId
+        - sourceId
+      properties:
+        sourceTypeId:
+          type: string
+          minLength: 1
+        sourceSubTypeId:
+          type: string
+        sourceId:
+          type: string
+          minLength: 1
+    ScreeningAnswers:
+      type: object
+      required:
+        - totalFound
+        - content
+      properties:
+        totalFound:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScreeningAnswer'
+    ScreeningAnswer:
+      type: object
+      required:
+        - id
+        - type
+        - category
+        - name
+        - label
+        - records
+      properties:
+        id:
+          type: string
+          description: Id of Question to which answer was responded
+        type:
+          type: string
+          enum:
+            - text
+            - checkbox
+            - languages
+            - acknowledgement
+            - textarea
+            - select
+            - files
+            - info
+            - eeo
+            - radio
+            - salaryExpectation
+            - currency
+            - work_shifts
+        category:
+          type: string
+          description: |
+            UUID for custom questions or fixed value for predefined questions:
+             - eeoInformation
+             - ofccpDisability
+             - ofccpVeteransForm
+             - veteranStatus
+             - disabilityStatus
+             - ofccpReasonableAccommodation
+             - ethnicity
+             - ethnicGroupsDescriptions
+             - todaysDate
+             - yourName
+             - preferredWorkShifts
+             - languages
+             - previousEmployment
+             - drivingRevoked
+             - drivingCurrent
+             - criminalRecord
+             - workPermit
+        name:
+          type: string
+          description: Question name visible to administrator on questions library list
+        label:
+          type: string
+          description: Question text shown to candidate
+        records:
+          type: array
+          description: >-
+            Multiple records may be used for example for questions (Preferred
+            Work Shifts, Languages)
+          items:
+            $ref: '#/components/schemas/AnswerRecord'
+    AnswerRecord:
+      type: object
+      required:
+        - fields
+      properties:
+        fields:
+          type: array
+          description: >-
+            Multiple fields may be used for example for questions (Preferred
+            Work Shifts, Languages, EEO, Currency)
+          items:
+            $ref: '#/components/schemas/AnswerField'
+    AnswerField:
+      type: object
+      required:
+        - id
+        - values
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+          description: Field label shown to candidate - ignore when empty
+        values:
+          type: array
+          description: >-
+            Multiple values may be used for example for Multiselect Dropdown
+            question
+          items:
+            $ref: '#/components/schemas/AnswerFieldValue'
+    AnswerFieldValue:
+      type: object
+      required:
+        - id
+        - label
+      properties:
+        id:
+          type: string
+          description: Value text or value ID - depends on question definition
+        label:
+          type: string
+          description: Value text shown to candidate
+    CandidateStatusHistoryListElem:
+      type: object
+      properties:
+        changedOn:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/CandidateStatusEnum'
+        subStatus:
+          type: string
+        actions:
+          $ref: '#/components/schemas/Actions'
+    CandidatePropertyType:
+      type: string
+      enum:
+        - BOOLEAN
+        - COUNTRY
+        - CURRENCY
+        - DATE
+        - NUMBER
+        - PERCENT
+        - REGION
+        - TEXT
+        - USER
+        - SINGLE_SELECT
+    CandidateConsentStatus:
+      type: object
+      required:
+      - status
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: Available when `status` is `ACQUIRED`
+        status:
+          $ref: '#/components/schemas/ConsentStatus'
+    ConsentRequest:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          description: candidate id
+          type: string
+    ConsentStatus:
+      type: string
+      description: |
+        * **REQUIRED** - no request for consent yet,
+        * **PENDING** - consent requested,
+        * **ACQUIRED** - provided provided by a candidate
+      enum:
+        - REQUIRED
+        - PENDING
+        - ACQUIRED
+    ConsentRequestsResults:
+      type: object
+      required:
+      - results
+      properties:
+        results:
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/ConsentRequestScheduled'
+            - $ref: '#/components/schemas/ConsentRequestUnavailable'
+    ConsentRequestScheduled:
+      type: object
+      required:
+      - status
+      - body
+      properties:
+        status:
+          type: integer
+          enum:
+          - 202
+        body:
+          type: object
+          properties:
+            location:
+              type: string
+    ConsentRequestUnavailable:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: integer
+          enum:
+          - 403
+        body:
+          type: boolean
+          enum:
+          - false
+    Property:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          minLength: 1
+        label:
+          type: string
+    When:
+      type: string
+      format: when
+      description: >-
+        date in YYYY, YYYY-MM or YYYY-MM-dd format, ex. "2016", "2016-11",
+        "2016-11-29"
+  parameters:
+    candidateId:
+      in: path
+      description: candidate identifier
+      name: id
+      required: true
+      schema:
+        type: string
+    jobId:
+      in: path
+      description: job identifier
+      name: jobId
+      required: true
+      schema:
+        type: string
+    attachmentId:
+      in: path
+      description: attachment identifier
+      name: attachmentId
+      required: true
+      schema:
+        type: string

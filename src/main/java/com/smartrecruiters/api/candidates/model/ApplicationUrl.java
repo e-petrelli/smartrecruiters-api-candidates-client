@@ -25,7 +25,7 @@ import java.io.IOException;
  * url property of a retrieved application represents current location of its details. Please be aware that the resource location may change in the future. 
  */
 @Schema(description = "url property of a retrieved application represents current location of its details. Please be aware that the resource location may change in the future. ")
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-05-23T14:57:09.146594+01:00[Europe/London]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-05-23T23:03:51.387015+01:00[Europe/London]")
 public class ApplicationUrl {
   @SerializedName("url")
   private String url = null;
