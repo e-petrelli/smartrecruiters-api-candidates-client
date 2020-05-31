@@ -2679,7 +2679,7 @@ components:
         type:
           $ref: '#/components/schemas/CandidatePropertyType'
         value:
-          type: string
+          type: object
         actions:
           type: object
           required:
